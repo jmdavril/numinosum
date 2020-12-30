@@ -1,0 +1,7 @@
+{
+  "name": "publiverse",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
