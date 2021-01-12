@@ -1,57 +1,60 @@
-import React, { useState } from 'react';
-import {Book, getBook} from '../data/books';
+import React, {useState} from 'react';
+import {Book} from '../data/books';
 import {
-  IonBackButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonItem,
-  IonLabel,
-  IonNote,
-  IonPage,
-  IonToolbar,
-  useIonViewWillEnter
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader, IonIcon,
+    IonNote,
+    IonPage,
+    IonToolbar,
 } from '@ionic/react';
-import { RouteComponentProps } from 'react-router';
-import './Book.css';
+import {RouteComponentProps, useHistory, useLocation} from 'react-router';
+import './ViewBook.css';
+import {chevronBackOutline} from "ionicons/icons";
 
-interface ViewBookProps extends RouteComponentProps<{ id: string; }> { }
 
-const Book: React.FC<ViewBookProps> = ({ match }) => {
+interface ViewBookProps extends RouteComponentProps<{ id: string }> {
+}
 
-  const [book, setBook] = useState<Book>();
+const ViewBook: React.FC<ViewBookProps> = ({match}) => {
+    // useIonViewWillEnter(() => {
+    //   const book = getBook(parseInt(match.params.id, 10));
+    //   setBook(book);
+    // });
 
-  useIonViewWillEnter(() => {
-    const book = getBook(parseInt(match.params.id, 10));
-    setBook(book);
-  });
+    const location = useLocation();
 
-  return (
-    <IonPage id="view-message-page">
-      <IonHeader translucent>
-        <IonToolbar>
-          <IonButtons>
-            <IonBackButton text="Books" defaultHref="/home"></IonBackButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
+    // @ts-ignore
+    const book: Book = location.state ? location.state.book : {id: 0, title: "", authors:""};
 
-      <IonContent fullscreen>
-        {book ? (
-          <>
-            <IonItem class="ion-padding">
-              <IonLabel className="ion-text-wrap">
-                <h2>
-                  {book.title}
-                </h2>
-                <h3><IonNote>{book.authors}</IonNote></h3>
-              </IonLabel>
-            </IonItem>
-          </>
-        ) : <div>Book not found</div>}
-      </IonContent>
-    </IonPage>
-  );
+    return (
+        <IonPage id="view-message-page">
+            <IonHeader translucent>
+                <IonToolbar>
+                    <IonButtons>
+                        <IonButton routerLink="/" routerDirection="back">
+                            <IonIcon slot="icon-only" icon={chevronBackOutline}/>
+                            Books
+                        </IonButton>
+                    </IonButtons>
+                </IonToolbar>
+            </IonHeader>
+
+            <IonContent fullscreen className="ion-padding">
+                <>
+                    <h1>
+                        {book.title}
+                    </h1>
+                    <h2>
+                        <IonNote>
+                            {book.authors}
+                        </IonNote>
+                    </h2>
+                </>
+            </IonContent>
+        </IonPage>
+    );
 };
 
-export default Book;
+export default ViewBook;

@@ -1,60 +1,65 @@
-import MessageListItem from '../components/MessageListItem';
-import React, { useState } from 'react';
-import { Message, getMessages } from '../data/messages';
+import BookListItem from '../components/BookListItem';
+import React from 'react';
 import {
-  IonContent,
-  IonHeader,
+  IonContent, IonFab, IonFabButton,
+  IonHeader, IonIcon,
   IonList,
   IonPage,
-  IonRefresher,
-  IonRefresherContent,
   IonTitle,
   IonToolbar,
-  useIonViewWillEnter
 } from '@ionic/react';
 import './Home.css';
+import {Book} from "../data/books";
+import { add } from 'ionicons/icons';
+import {BooksState} from "../redux/reducer";
+import {connect} from "react-redux";
 
-const Home: React.FC = () => {
+interface BooksProps {
+  books: Book[];
+}
 
-  const [messages, setMessages] = useState<Message[]>([]);
+const Home: React.FC<BooksProps> = ({books}: BooksProps) => {
 
-  useIonViewWillEnter(() => {
-    const msgs = getMessages();
-    setMessages(msgs);
-  });
+  // useIonViewWillEnter(() => {
+  //   const books = getBooks();
+  //   setBooks(books);
+  // TODO init books here ?
+  // });
 
-  const refresh = (e: CustomEvent) => {
-    setTimeout(() => {
-      e.detail.complete();
-    }, 3000);
-  };
 
   return (
     <IonPage id="home-page">
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
+          <IonTitle>Books</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonRefresher slot="fixed" onIonRefresh={refresh}>
-          <IonRefresherContent></IonRefresherContent>
-        </IonRefresher>
+        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+          <IonFabButton routerLink="/add-book">
+            <IonIcon icon={add} />
+          </IonFabButton>
+        </IonFab>
 
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">
-              Inbox
+              Books
             </IonTitle>
           </IonToolbar>
         </IonHeader>
 
-        <IonList>
-          {messages.map(m => <MessageListItem key={m.id} message={m} />)}
+        <IonList class="ion-padding">
+          {books.map(b => <BookListItem key={b.id} book={b} />)}
         </IonList>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Home;
+const mapStateToProps = (state: BooksState) => {
+  const books = state.books
+  return {books};
+};
+
+export default connect(mapStateToProps)(Home);

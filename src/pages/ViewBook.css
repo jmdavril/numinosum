@@ -35,6 +35,12 @@
   font-size: 22px;
 }
 
+#view-message-page h2 {
+  margin: 0;
+  font-weight: normal;
+  font-size: 18px;
+}
+
 #view-message-page p {
   line-height: 22px;
 }
