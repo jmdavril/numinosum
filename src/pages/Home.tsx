@@ -36,7 +36,7 @@ const Home: React.FC<BooksProps> = ({books}: BooksProps) => {
       </IonHeader>
       <IonContent fullscreen>
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton routerLink="/add-book">
+          <IonFabButton routerLink="/books/add-book">
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>

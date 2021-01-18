@@ -44,3 +44,7 @@
 #view-message-page p {
   line-height: 22px;
 }
+
+#view-message-page ion-list {
+  margin-top: 16px;
+}

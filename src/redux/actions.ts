@@ -1,4 +1,4 @@
-import {BOOK_ADDED, BOOK_EDITED, BOOKS_INIT, BooksActionTypes} from "./types";
+import {BOOK_ADDED, BOOK_EDITED, BOOKS_INIT, BooksActionTypes, EXCERPT_ADDED} from "./types";
 import {Book} from "../data/books";
 
 export function initBooks(books: Book[]): BooksActionTypes {
@@ -16,9 +16,20 @@ export function addBook(newBookTitle: string, newBookAuthors: string): BooksActi
     }
 }
 
-export function editBook(newBook: Book): BooksActionTypes {
+export function editBook(bookId: number, bookTitle: string, bookAuthors: string): BooksActionTypes {
     return {
         type: BOOK_EDITED,
-        newBook: newBook
+        bookId: bookId,
+        newBookTitle: bookTitle,
+        newBookAuthors: bookAuthors
+    }
+}
+
+export function addExcerpt(bookId: number, pageNumber: number, excerptText: string ): BooksActionTypes {
+    return {
+        type: EXCERPT_ADDED,
+        bookId: bookId,
+        pageNumber: pageNumber,
+        excerptText: excerptText
     }
 }

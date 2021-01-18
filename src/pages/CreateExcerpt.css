@@ -1,0 +1,22 @@
+
+#create-excerpt-page h1 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+#create-excerpt-page h2 {
+    margin: 0;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+#create-excerpt-page  ion-item {
+    font-size: 15px;
+    margin-right: 12px;
+    font-weight: normal;
+}
+
+#create-excerpt-page  ion-list {
+    margin-top: 24px;
+}

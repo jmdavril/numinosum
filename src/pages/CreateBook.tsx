@@ -6,7 +6,7 @@ import {
     IonHeader, IonInput,
     IonItem,
     IonLabel,
-    IonPage, IonTitle, IonToast,
+    IonPage, IonTitle,
     IonToolbar,
 } from '@ionic/react';
 import './CreateBook.css';
@@ -15,7 +15,6 @@ import {addBook} from "../redux/actions";
 import {BooksActionTypes} from "../redux/types";
 import {useHistory} from "react-router";
 import {getBook, getLastId} from "../redux/selectors";
-import {BooksState} from "../redux/reducer";
 
 interface CreateBookProps {
     addBook: (newBookTitle: string, newBookAuthors: string) => BooksActionTypes;
@@ -33,7 +32,7 @@ const CreateBook: React.FC<CreateBookProps> = ({addBook}) => {
         if (bookTitle && bookAuthors) {
             const bookAdded: BooksActionTypes = addBook(bookTitle, bookAuthors);
             const id = lastId + 1;
-            history.push({pathname: `/books/${id}`, state: {book: {id: id, title: bookTitle, authors: bookAuthors}}})
+            history.push({pathname: `/books/${id}`, state: {book: {id: id, title: bookTitle, authors: bookAuthors, excerpts: []}}})
         }
     }
 
@@ -45,7 +44,7 @@ const CreateBook: React.FC<CreateBookProps> = ({addBook}) => {
                         <IonBackButton text="Books" defaultHref="/"></IonBackButton>
                     </IonButtons>
                     <IonTitle>
-                        Add new book
+                        Add book
                     </IonTitle>
                     <IonButtons slot="end">
                         <IonButton onClick={onAddButtonClicked}>

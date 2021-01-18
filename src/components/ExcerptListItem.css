@@ -1,0 +1,9 @@
+.excerpt-list-item {
+    flex-direction: column;
+}
+
+.page-number {
+    color: #777;
+    font-weight: 500;
+    padding-right: 8px;
+}

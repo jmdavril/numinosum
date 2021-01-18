@@ -21,7 +21,7 @@ interface EditBookProps {
     bookId: number;
     oldBookTitle: string;
     oldBookAuthors: string;
-    editBook: (newBook: Book) => BooksActionTypes;
+    editBook: (bookId: number, bookTitle: string, bookAuthors: string) => BooksActionTypes;
 }
 
 const EditBook: React.FC<EditBookProps> = ({bookId, oldBookTitle, oldBookAuthors, editBook}) => {
@@ -33,7 +33,7 @@ const EditBook: React.FC<EditBookProps> = ({bookId, oldBookTitle, oldBookAuthors
 
     const onSaveButtonClicked = () => {
         if (bookTitle && bookAuthors) {
-            const bookEdited: BooksActionTypes = editBook({id: bookId, title: bookTitle, authors: bookAuthors});
+            const bookEdited: BooksActionTypes = editBook(bookId, bookTitle, bookAuthors);
             history.push(`/books/${bookId}`)
         }
     }

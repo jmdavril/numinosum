@@ -1,5 +1,5 @@
 import React from 'react';
-import {Redirect, Route} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import {IonApp, IonRouterOutlet} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
 import Home from './pages/Home';
@@ -28,6 +28,7 @@ import CreateBook from "./pages/CreateBook";
 /* Redux */
 import {Provider} from 'react-redux'
 import store from './redux/store'
+import CreateExcerpt from "./pages/CreateExcerpt";
 
 const App: React.FC = () => (
     <Provider store={store}>
@@ -35,8 +36,9 @@ const App: React.FC = () => (
             <IonReactRouter>
                 <IonRouterOutlet>
                     <Route exact path="/" component={Home} />
-                    <Route path="/books/:id" component={ViewBook} />
-                    <Route exact Path="add-book" component={CreateBook} />
+                    <Route exact path="/books/:id" component={ViewBook} />
+                    <Route exact path="/books/add-book" component={CreateBook} />
+                    <Route exact path="/books/:id/add-excerpt" component={CreateExcerpt} />
                 </IonRouterOutlet>
             </IonReactRouter>
         </IonApp>
