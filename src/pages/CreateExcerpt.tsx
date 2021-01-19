@@ -7,7 +7,7 @@ import {
     IonButtons,
     IonContent,
     IonHeader,
-    IonIcon, IonImg, IonInput, IonItem, IonItemDivider, IonList, IonNote,
+    IonIcon, IonImg, IonInput, IonItem, IonItemDivider, IonList, IonLoading, IonModal, IonNote,
     IonPage,
     IonTextarea, IonTitle,
     IonToolbar
@@ -21,6 +21,7 @@ import {addExcerpt} from "../redux/actions";
 import {connect} from "react-redux";
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import {createWorker, PSM} from 'tesseract.js';
 
 
 interface CreateExcerptProps {
@@ -35,8 +36,8 @@ const getCroppedImg = async (image: HTMLImageElement, crop: any, fileName: strin
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-    canvas.width = Math.ceil(crop.width*scaleX);
-    canvas.height = Math.ceil(crop.height*scaleY);
+    canvas.width = Math.ceil(crop.width * scaleX);
+    canvas.height = Math.ceil(crop.height * scaleY);
     const ctx = canvas.getContext('2d');
 
     ctx!.drawImage(
@@ -47,8 +48,8 @@ const getCroppedImg = async (image: HTMLImageElement, crop: any, fileName: strin
         crop.height * scaleY,
         0,
         0,
-        crop.width*scaleX,
-        crop.height*scaleY,
+        crop.width * scaleX,
+        crop.height * scaleY,
     );
 
     // As Base64 string
@@ -64,6 +65,7 @@ const getCroppedImg = async (image: HTMLImageElement, crop: any, fileName: strin
     });
 }
 
+
 const CreateExcerpt: React.FC<CreateExcerptProps> = ({addExcerpt}) => {
     const {getPhoto} = useCamera();
     const [excerptText, setExcerptText] = useState<string | undefined | null>();
@@ -74,11 +76,12 @@ const CreateExcerpt: React.FC<CreateExcerptProps> = ({addExcerpt}) => {
     const history = useHistory();
     const [crop, setCrop] = useState<any>({});
     const [croppedImage, setCroppedImage] = useState<any | undefined>(undefined);
+    const [showModal, setShowModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const onLoad = (img: HTMLImageElement) => {
-        setImage(img)
+        setImage(img);
     };
-
 
     // @ts-ignore
     const book: Book = location.state ? location.state.book : {id: 0, title: "", authors: ""};
@@ -90,11 +93,34 @@ const CreateExcerpt: React.FC<CreateExcerptProps> = ({addExcerpt}) => {
             quality: 100
         });
         setExcerptPhoto(cameraPhoto);
+        setShowModal(true);
     };
 
+    const worker = createWorker({
+        logger: m => console.log(m)
+    });
+
+    const getOCROutput = async (blob: any): Promise<string> => {
+        await worker.load();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        const {data: {text}} = await worker.recognize(URL.createObjectURL(blob));
+
+        return text.split("\n").filter(s => s.trim() !== "").join()
+    }
+
     const getCroppedPhoto = async () => {
+        setIsLoading(true);
         const blob = await getCroppedImg(image!, crop, "test");
         setCroppedImage(blob);
+        const outputText: string = await getOCROutput(blob);
+        if (excerptText) {
+            setExcerptText(excerptText.concat(outputText));
+        } else {
+            setExcerptText(outputText);
+        }
+        setIsLoading(false);
+        setShowModal(false);
     }
 
     const onExcerptAddClick = () => {
@@ -125,6 +151,19 @@ const CreateExcerpt: React.FC<CreateExcerptProps> = ({addExcerpt}) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen className="ion-padding">
+                <IonLoading
+                    isOpen={isLoading}
+                    message={'Extracting text...'}
+                />
+                <IonModal isOpen={(showModal)}>
+                    {excerptPhoto &&
+                    <div>
+                        <ReactCrop src={excerptPhoto.webPath!} crop={crop} onChange={newCrop => setCrop(newCrop)}
+                                   onImageLoaded={(onLoad)}/>
+                    </div>
+                    }
+                    <IonButton onClick={() => getCroppedPhoto()}>Confirm</IonButton>
+                </IonModal>
                 <h1>{book.title}</h1>
                 <h2><IonNote>{book.authors}</IonNote></h2>
 
@@ -148,13 +187,7 @@ const CreateExcerpt: React.FC<CreateExcerptProps> = ({addExcerpt}) => {
                 <IonButton expand="block" onClick={() => takePhoto()}>
                     Take photo
                 </IonButton>
-                {excerptPhoto &&
-                    <div>
-                        <ReactCrop src={excerptPhoto.webPath!} crop={crop} onChange={newCrop => setCrop(newCrop)}
-                                   onImageLoaded={(onLoad)}/>
-                        <IonButton onClick={() => getCroppedPhoto()}>Test</IonButton>
-                    </div>}
-                {croppedImage && <img alt="dummy" src={URL.createObjectURL(croppedImage)} />}
+                {croppedImage && <img alt="dummy" src={URL.createObjectURL(croppedImage)}/>}
             </IonContent>
         </IonPage>
     );

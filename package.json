@@ -28,6 +28,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "redux": "^4.0.5",
+    "tesseract.js": "^2.1.4",
     "typescript": "3.8.3"
   },
   "scripts": {
