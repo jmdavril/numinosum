@@ -1,7 +1,5 @@
 # Numinosum
 
-Numinosum is an Ionic app for taking pictures of physical book excerpts and perform OCR on them.
+Numinosum is a mobile app for collecting and organizing book excerpts taken from physical books. It allows you to take pictures of book pages, crop the excerpts you are interrested in and perform OCR on them so you don't have to rewrite them by hand.
 
-It is meant for collecting short book excerpts with your phone without having to rewrite them by hand.
-
-Built with Ionic 5.
+Built with Ionic 5 in React. Uses [react-image-crop](https://github.com/DominicTobias/react-image-crop) and [tesseract.js](https://github.com/naptha/tesseract.js) for OCR.
